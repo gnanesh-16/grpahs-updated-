@@ -86,7 +86,6 @@
 </body>
 </html>
  -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,10 +101,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Align items to the top */
             height: 100vh;
             text-align: center; /* Center text */
-            position: relative; /* Relative positioning for absolute iframe */
         }
         h1 {
             margin-bottom: 20px;
@@ -137,11 +135,8 @@
         }
         iframe {
             display: none; /* Hide iframe initially */
-            position: absolute; /* Position it absolutely to cover the entire viewport */
-            top: 0; /* Align to the top */
-            left: 0; /* Align to the left */
             width: 100vw; /* Full viewport width */
-            height: 100vh; /* Full viewport height */
+            height: 70vh; /* Fixed height for iframe */
             border: none; /* No border */
             background-color: #1e1e1e; /* Background for iframe */
         }
