@@ -1,78 +1,4 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <style>
-        body {
-            background-color: #121212; /* Dark background */
-            color: white; /* Light text color */
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        h2 {
-            margin-bottom: 30px;
-            font-size: 2em; /* Larger font for the heading */
-        }
-        nav {
-            margin-bottom: 20px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-        }
-        a {
-            color: #66fcf1; /* Link color */
-            text-decoration: none;
-        }
-        button {
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 15px 30px; /* Larger buttons */
-            margin: 10px;
-            cursor: pointer;
-            font-size: 18px; /* Larger font size */
-            transition: transform 0.2s;
-        }
-        button:hover {
-            transform: scale(1.05);
-        }
-        button:active {
-            transform: scale(0.95);
-        }
-    </style>
-</head>
-<body>
-    <h1>Welcome to My Website</h1>
-    <h2>CAN (Controller Area Network) Graphs</h2>
-    <nav>
-        <ul>
-            <li><a href="index2.html">Page 2</a></li>
-            <li><a href="index3.html">Page 3</a></li>
-            <li><a href="index4.html">Page 4</a></li>
-        </ul>
-    </nav>
-    <button onclick="location.href='index2.html';">Indexing Graph 1 - Click Here</button>
-    <button onclick="location.href='index3.html';">Indexing 3 Graph 1.1 - Click Here</button>
-    <button onclick="location.href='index4.html';">Indexing Graph 4 - Click Here</button>
-</body>
-</html>
- -->
-
- <!DOCTYPE html>
+<!--  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -144,6 +70,95 @@
                 window.location.href = url;
             }, 2000);
         }
+    </script>
+</body>
+</html>
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            color: white; /* Light text color */
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center; /* Center text */
+            transition: background-color 0.5s; /* Smooth background transition */
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 3em; /* Larger main heading */
+            letter-spacing: 1px; /* Space between letters */
+        }
+        p {
+            margin-bottom: 30px;
+            font-size: 1.2em; /* Slightly larger paragraph */
+        }
+        button {
+            background-color: #28a745; /* Modern green color */
+            color: white;
+            border: none;
+            padding: 15px 30px; /* Consistent button size */
+            margin: 10px;
+            cursor: pointer;
+            font-size: 18px; /* Consistent font size */
+            transition: transform 0.2s, background-color 0.2s; /* Transition effects */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        button:hover {
+            transform: scale(1.05);
+            background-color: #218838; /* Darker green on hover */
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #loader {
+            display: none;
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #66fcf1; /* Loader color */
+        }
+    </style>
+</head>
+<body>
+    <h1>CAN Graphs</h1>
+    <p>Select an option to visualize the data:</p>
+    <button onclick="loadPage('index2.html');">Graph 1</button>
+    <button onclick="loadPage('index3.html');">Graph 2</button>
+    <button onclick="loadPage('index4.html');">Graph 3</button>
+    
+    <div id="loader">Loading...</div>
+
+    <script>
+        function loadPage(url) {
+            // Show loader
+            document.getElementById('loader').style.display = 'block';
+            // Hide buttons while loading
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => button.style.display = 'none');
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = url;
+            }, 2000);
+        }
+
+        // Restore buttons on page load
+        window.onload = function() {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'none'; // Hide loader on initial load
+        };
     </script>
 </body>
 </html>
