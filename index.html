@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -68,5 +68,82 @@
     <button onclick="location.href='index2.html';">Indexing Graph 1 - Click Here</button>
     <button onclick="location.href='index3.html';">Indexing 3 Graph 1.1 - Click Here</button>
     <button onclick="location.href='index4.html';">Indexing Graph 4 - Click Here</button>
+</body>
+</html>
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            color: white; /* Light text color */
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center; /* Center text */
+        }
+        h1 {
+            margin-bottom: 40px;
+            font-size: 2.5em; /* Larger main heading */
+            letter-spacing: 1px; /* Space between letters */
+        }
+        button {
+            background-color: #28a745; /* Modern green color */
+            color: white;
+            border: none;
+            padding: 15px 30px; /* Consistent button size */
+            margin: 10px;
+            cursor: pointer;
+            font-size: 18px; /* Consistent font size */
+            transition: transform 0.2s, background-color 0.2s; /* Transition effects */
+            border-radius: 5px; /* Rounded corners */
+        }
+        button:hover {
+            transform: scale(1.05);
+            background-color: #218838; /* Darker green on hover */
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #loader {
+            display: none;
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #66fcf1; /* Loader color */
+        }
+    </style>
+</head>
+<body>
+    <h1>CAN Graphs</h1>
+    <p>Select an option to visualize the data:</p>
+    <button onclick="loadPage('index1.html');">Graph 1</button>
+    <button onclick="loadPage('index3.html');">Graph 2</button>
+    <button onclick="loadPage('index4.html');">Graph 3</button>
+    
+    <div id="loader">Loading...</div>
+
+    <script>
+        function loadPage(url) {
+            // Show loader
+            document.getElementById('loader').style.display = 'block';
+            // Hide buttons while loading
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => button.style.display = 'none');
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = url;
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
