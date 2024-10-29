@@ -1,281 +1,149 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>CAN Data Analysis Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.24.2/plotly.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .formulas {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .can-info {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        h2, h3 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        .can-info ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .can-info ul li {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        #parkingPlot {
             background-color: white;
-            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .chart-container {
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Advanced Reverse Parking Scenario Visualization</h2>
-        
-        <div class="formulas">
-            <h3>Key Formulas & Parameters:</h3>
-            <p>1. Distance to waypoint calculation:</p>
-            <div>$$ distance = \sqrt{(wp_x - current_x)^2 + (wp_y - current_y)^2} $$</div>
-            
-            <p>2. Waypoint threshold check:</p>
-            <div>$$ |distance| < 0.45 \text{ meters} $$</div>
-            
-            <p>3. Steering angle:</p>
-            <div>$$ \theta = -0.45° \text{ (during reverse parking)} $$</div>
-            
-            <p>4. Vehicle motion control:</p>
-            <div>$$ v_{control} = \begin{cases} 
-                1, & \text{if counter} \geq 98 \\
-                0, & \text{otherwise}
-            \end{cases} $$</div>
+        <div class="header">
+            <h1>CAN ID: 0x12910109 Analysis Dashboard</h1>
+            <p>J1939 Acceleration Control System Analysis</p>
         </div>
 
-        <div id="parkingPlot"></div>
+        <div class="info-box">
+            <h3>CAN Message Structure</h3>
+            <pre>
+Byte 0: Drive Mode
+- 0x00: Neutral Mode
+- 0x01: Drive Mode (Forward)
+- 0x03: Reverse Mode
 
-        <div class="can-info">
-            <h3>CAN Communication Protocol:</h3>
-            <ul>
-                <li>🚗 Acceleration Control (ID: 0x130)
-                    <br>Format: [0x31, Control, 0x00, 0x00, 0x00, 0x00, Counter, Checksum]</li>
-                <li>🎯 Steering Control (ID: 0x132)
-                    <br>Format: [Command, Angle, Speed, 0x00, 0x00, 0x00, Counter, Checksum]</li>
-                <li>⚡ Update Rate: 10Hz (100ms interval)</li>
-            </ul>
+Byte 1: Status Indicator
+- Changed bits: 0x1
+
+Byte 2: Brake Status
+- 0x00: No brake applied
+- 0x01: Hand brake applied
+
+Byte 3 & 4: Constants
+- Both typically 0x01
+
+Byte 5: Constant
+- Fixed at 0x00
+
+Byte 6: Acceleration Level
+- Range: 0x00 to 0x19 (0-25)
+- 0x00: 0% acceleration
+- 0x0A: 10% acceleration
+- etc.
+
+Byte 7: Constant
+- Fixed at 0x00
+            </pre>
+        </div>
+
+        <div class="grid">
+            <div class="chart-container">
+                <div id="driveModePie"></div>
+            </div>
+            <div class="chart-container">
+                <div id="accelerationHist"></div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div id="bitChangeHeatmap"></div>
         </div>
     </div>
 
     <script>
-        // Create parking scenario visualization
-        const data = [
-            // Road background (asphalt color)
-            {
-                x: [-6, 6, 6, -6, -6],
-                y: [-4, -4, 0, 0, -4],
-                fill: 'toself',
-                fillcolor: '#404040',
-                line: {width: 0},
-                name: 'Road Surface',
-                showlegend: false
-            },
-            // First Lane Border (yellow)
-            {
-                x: [-5, 5],
-                y: [-3.5, -3.5],
-                mode: 'lines',
-                line: {
-                    color: '#FFD700',
-                    width: 3
-                },
-                name: 'Lane Border'
-            },
-            // Second Lane Border (yellow)
-            {
-                x: [-5, 5],
-                y: [-0.5, -0.5],
-                mode: 'lines',
-                line: {
-                    color: '#FFD700',
-                    width: 3
-                },
-                showlegend: false
-            },
-            // Center line (dashed white)
-            {
-                x: [-5, 5],
-                y: [-2, -2],
-                mode: 'lines',
-                line: {
-                    color: 'white',
-                    width: 2,
-                    dash: 'dash'
-                },
-                name: 'Center Line'
-            },
-            // Parking Space (red box with transparency)
-            {
-                x: [-4.5, -4.5, -3.5, -3.5, -4.5],
-                y: [-3.3, -2.7, -2.7, -3.3, -3.3],
-                fill: 'toself',
-                fillcolor: 'rgba(255, 0, 0, 0.3)',
-                line: {
-                    color: 'red',
-                    width: 2
-                },
-                name: 'Parking Space'
-            },
-            // Vehicle Path with direction arrows
-            {
-                x: [0.67, -0.5, -2, -3.5, -4.5],
-                y: [-2.81, -2.81, -2.7, -2.6, -2.63],
-                mode: 'lines+markers',
-                line: {
-                    color: '#00ffff',
-                    width: 4
-                },
-                marker: {
-                    size: 10,
-                    symbol: 'arrow-bar-right',
-                    color: '#00ffff'
-                },
-                name: 'Vehicle Path'
-            },
-            // Starting Position (with vehicle icon)
-            {
-                x: [0.67],
-                y: [-2.81],
-                mode: 'markers',
-                marker: {
-                    size: 20,
-                    symbol: 'square',
-                    color: '#2ecc71'
-                },
-                name: 'Start Position'
-            },
-            // End Position (with vehicle icon)
-            {
-                x: [-4.5],
-                y: [-2.63],
-                mode: 'markers',
-                marker: {
-                    size: 20,
-                    symbol: 'square',
-                    color: '#e74c3c'
-                },
-                name: 'End Position'
-            },
-            // Steering angle indicator
-            {
-                x: [-3.5, -4],
-                y: [-2.6, -2.8],
-                mode: 'lines',
-                line: {
-                    color: '#f1c40f',
-                    width: 2,
-                    dash: 'dot'
-                },
-                name: 'Steering Angle'
+        // Drive Mode Distribution
+        const driveModeData = {
+            values: [4496, 7956, 3450],
+            labels: ['Neutral (0x00)', 'Forward (0x01)', 'Reverse (0x03)'],
+            type: 'pie',
+            title: 'Drive Mode Distribution'
+        };
+        Plotly.newPlot('driveModePie', [driveModeData], {
+            title: 'Drive Mode Distribution (Byte 0)',
+            height: 400
+        });
+
+        // Acceleration Level Histogram
+        const accelerationData = {
+            x: ['0', '1', '2', '3', '4', '5', '6', '7'],
+            y: [10535, 2902, 833, 298, 410, 581, 97, 246],
+            type: 'bar',
+            marker: {
+                color: 'rgb(55, 83, 109)'
             }
+        };
+        Plotly.newPlot('accelerationHist', [accelerationData], {
+            title: 'Acceleration Level Distribution (Byte 6)',
+            xaxis: {title: 'Acceleration Level'},
+            yaxis: {title: 'Frequency'},
+            height: 400
+        });
+
+        // Bit Change Heatmap
+        const z = [
+            [0.02, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
+            [0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
+            [0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
+            [0.01, 0.01, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00],
+            [0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
+            [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00],
+            [0.37, 0.12, 0.02, 0.00, 0.00, 0.00, 0.00, 0.00],
+            [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
         ];
 
-        const layout = {
-            title: {
-                text: 'Reverse Parking Maneuver Simulation',
-                font: {
-                    size: 24,
-                    color: '#2c3e50'
-                }
-            },
-            plot_bgcolor: '#404040',
-            paper_bgcolor: '#ffffff',
-            xaxis: {
-                title: 'X Position (meters)',
-                range: [-6, 6],
-                gridcolor: '#606060',
-                zeroline: false
-            },
-            yaxis: {
-                title: 'Y Position (meters)',
-                range: [-4, 0],
-                scaleanchor: 'x',
-                scaleratio: 1,
-                gridcolor: '#606060',
-                zeroline: false
-            },
-            showlegend: true,
-            legend: {
-                x: 1.1,
-                y: 1,
-                bgcolor: 'rgba(255,255,255,0.8)',
-                bordercolor: '#3498db',
-                borderwidth: 1
-            },
-            annotations: [
-                {
-                    x: -3.75,
-                    y: -2.7,
-                    text: 'θ = -0.45°',
-                    font: {
-                        color: '#f1c40f',
-                        size: 14
-                    },
-                    showarrow: false
-                },
-                {
-                    x: -4.5,
-                    y: -3.5,
-                    text: 'Parking<br>Zone',
-                    font: {
-                        color: 'red',
-                        size: 12
-                    },
-                    showarrow: false
-                }
-            ],
-            shapes: [
-                // Add parking spot markings
-                {
-                    type: 'line',
-                    x0: -4.5,
-                    y0: -3.3,
-                    x1: -3.5,
-                    y1: -3.3,
-                    line: {
-                        color: 'white',
-                        width: 2
-                    }
-                }
-            ]
+        const heatmapData = {
+            z: z,
+            x: ['Bit 0', 'Bit 1', 'Bit 2', 'Bit 3', 'Bit 4', 'Bit 5', 'Bit 6', 'Bit 7'],
+            y: ['Byte 0', 'Byte 1', 'Byte 2', 'Byte 3', 'Byte 4', 'Byte 5', 'Byte 6', 'Byte 7'],
+            type: 'heatmap',
+            colorscale: 'Viridis'
         };
 
-        const config = {
-            responsive: true,
-            displayModeBar: true,
-            modeBarButtonsToAdd: ['hoverclosest', 'hovercompare'],
-            displaylogo: false
-        };
-
-        Plotly.newPlot('parkingPlot', data, layout, config);
+        Plotly.newPlot('bitChangeHeatmap', [heatmapData], {
+            title: 'Bit Change Frequency Heatmap',
+            height: 400
+        });
     </script>
 </body>
 </html>
