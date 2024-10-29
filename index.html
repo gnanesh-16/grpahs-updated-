@@ -1,81 +1,4 @@
-<!--  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <style>
-        body {
-            background-color: #121212; /* Dark background */
-            color: white; /* Light text color */
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center; /* Center text */
-        }
-        h1 {
-            margin-bottom: 40px;
-            font-size: 2.5em; /* Larger main heading */
-            letter-spacing: 1px; /* Space between letters */
-        }
-        button {
-            background-color: #28a745; /* Modern green color */
-            color: white;
-            border: none;
-            padding: 15px 30px; /* Consistent button size */
-            margin: 10px;
-            cursor: pointer;
-            font-size: 18px; /* Consistent font size */
-            transition: transform 0.2s, background-color 0.2s; /* Transition effects */
-            border-radius: 5px; /* Rounded corners */
-        }
-        button:hover {
-            transform: scale(1.05);
-            background-color: #218838; /* Darker green on hover */
-        }
-        button:active {
-            transform: scale(0.95);
-        }
-        #loader {
-            display: none;
-            margin-top: 20px;
-            font-size: 1.5em;
-            color: #66fcf1; /* Loader color */
-        }
-    </style>
-</head>
-<body>
-    <h1>CAN Graphs</h1>
-    <p>Select an option to visualize the data:</p>
-    <button onclick="loadPage('index2.html');">Graph 1</button>
-    <button onclick="loadPage('index3.html');">Graph 2</button>
-    <button onclick="loadPage('index4.html');">Graph 3</button>
-    
-    <div id="loader">Loading...</div>
-
-    <script>
-        function loadPage(url) {
-            // Show loader
-            document.getElementById('loader').style.display = 'block';
-            // Hide buttons while loading
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(button => button.style.display = 'none');
-
-            // Redirect after 2 seconds
-            setTimeout(() => {
-                window.location.href = url;
-            }, 2000);
-        }
-    </script>
-</body>
-</html>
- -->
-
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -162,3 +85,83 @@
     </script>
 </body>
 </html>
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAN Graphs</title>
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            color: white; /* Light text color */
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center; /* Center text */
+            transition: background-color 0.5s; /* Smooth background transition */
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 3em; /* Larger main heading */
+            letter-spacing: 1px; /* Space between letters */
+        }
+        p {
+            margin-bottom: 30px;
+            font-size: 1.2em; /* Slightly larger paragraph */
+        }
+        button {
+            background-color: #28a745; /* Modern green color */
+            color: white;
+            border: none;
+            padding: 15px 30px; /* Consistent button size */
+            margin: 10px;
+            cursor: pointer;
+            font-size: 18px; /* Consistent font size */
+            transition: transform 0.2s, background-color 0.2s; /* Transition effects */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        button:hover {
+            transform: scale(1.05);
+            background-color: #218838; /* Darker green on hover */
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        iframe {
+            display: none; /* Hide iframe initially */
+            width: 80%;
+            height: 500px; /* Adjust height as needed */
+            border: 2px solid #66fcf1; /* Border color */
+            border-radius: 10px; /* Rounded corners */
+            margin-top: 20px;
+            background-color: #1e1e1e; /* Background for iframe */
+        }
+    </style>
+</head>
+<body>
+    <h1>CAN Graphs</h1>
+    <p>Select an option to visualize the data:</p>
+    <button onclick="loadGraph('index2.html');">Graph 1</button>
+    <button onclick="loadGraph('index3.html');">Graph 2</button>
+    <button onclick="loadGraph('index4.html');">Graph 3</button>
+
+    <iframe id="graphFrame" src=""></iframe>
+
+    <script>
+        function loadGraph(graphUrl) {
+            const iframe = document.getElementById('graphFrame');
+            iframe.src = graphUrl; // Set the source to the selected HTML file
+            iframe.style.display = 'block'; // Show the iframe
+        }
+    </script>
+</body>
+</html>
+
