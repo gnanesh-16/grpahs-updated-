@@ -4,14 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            color: white; /* Light text color */
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            color: #66fcf1; /* Link color */
+            text-decoration: none;
+        }
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to My Website</h1>
     <nav>
         <ul>
-            <li><a href="_index2.html">Page 2</a></li>
+            <li><a href="index2.html">Page 2</a></li>
             <li><a href="index3.html">Page 3</a></li>
         </ul>
     </nav>
+    <button id="button1">Indexing Graph 1 - Click Here</button>
+    <button id="button2">Indexing 3 Graph 1.1 - Click Here</button>
+
+    <script>
+        // Optional: Add click event listeners for button actions
+        document.getElementById('button1').onclick = function() {
+            alert('Button 1 clicked!');
+        };
+
+        document.getElementById('button2').onclick = function() {
+            alert('Button 2 clicked!');
+        };
+    </script>
 </body>
 </html>
